@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Financial.Models.Enum;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,25 +9,22 @@ namespace Financial.Models
     {
         #region Propriedades
 
-        public int Id { get; set; }
+        #region DadosIndividuais
 
+        public int Id { get; set; }
         public string Usuario { get; set; }
+        public string Endereco { get; set; }
+
+        #endregion DadosIndividuais
+        #region DadosConta        
 
         public string PacoteServico { get; set; }
+        public TipoConta TipoConta { get; set; }
 
-        #endregion
-
-        #region Construtores
-
-        public Conta()
-        {
-
-        }
-
-        #endregion
+        #endregion DadosConta
+        #endregion Propriedade
 
         #region Métodos
-        
         public decimal VisualizarSaldo()
         {
             throw new NotImplementedException();
