@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.IO;
 using Microsoft.OpenApi.Models;
+using Financial.WebAPI;
 
 namespace WebAPI
 {
@@ -60,6 +61,8 @@ namespace WebAPI
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddSingleton<ContaPFOperacoes>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
