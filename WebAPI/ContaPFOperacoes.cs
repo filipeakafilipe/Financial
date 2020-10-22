@@ -20,6 +20,8 @@ namespace Financial.WebAPI
             _ContasPF = GerarLista();
         }
 
+        #region Get
+
         public List<ContaPF> GetAll()
         {
             return _ContasPF;
@@ -38,6 +40,115 @@ namespace Financial.WebAPI
         public List<ContaPF> GetByAgencia(int agencia)
         {
             return _ContasPF.Where(c => c.Agencia == agencia).ToList();
+        }
+
+        #endregion
+
+        #region Post
+
+        public ContaPF CriarConta(ContaPF conta)
+        {
+            conta.Id = GetProximoId();
+
+            _ContasPF.Add(conta);
+
+            return conta;
+        }
+
+        public List<ContaPF> CriarContas(List<ContaPF> contas)
+        {
+            contas.ForEach(c =>
+            {
+                c.Id = GetProximoId();
+
+                _ContasPF.Add(c);
+            });
+
+            return _ContasPF;
+        }
+
+        #endregion
+
+        #region Delete
+
+        public void DeletarTodos()
+        {
+            _ContasPF.RemoveAll(c => c != null);
+        }
+
+        public void DeletarContaPorId(int id)
+        {
+            var conta = GetById(id);
+
+            if (conta != null)
+            {
+                _ContasPF.Remove(conta);
+            }
+        }
+
+        public void DeletarContaPorConta(int numeroConta)
+        {
+            var conta = GetByConta(numeroConta);
+
+            if (conta != null)
+            {
+                _ContasPF.Remove(conta);
+            }
+        }
+
+        public void DeletarContasPorAgencia(int agencia)
+        {
+            var contas = GetByAgencia(agencia);
+
+            if (contas != null)
+            {
+                contas.ForEach(c => _ContasPF.Remove(c));
+            }
+        }
+
+        #endregion
+
+        #region Put
+
+        public ContaPF AlterarContaPorId(int id, ContaPF novaConta)
+        {
+            var conta = _ContasPF.FirstOrDefault(c => c.Id == id);
+
+            if(conta != null)
+            {
+                conta.Agencia = novaConta.Agencia;
+                conta.Conta = novaConta.Conta;
+                conta.NomeCompleto = novaConta.NomeCompleto;
+                conta.TipoConta = novaConta.TipoConta;
+
+                return conta;
+            }
+
+            return null;
+        }
+
+        public ContaPF AlterarContaPorConta(int numeroConta, ContaPF novaConta)
+        {
+            var conta = _ContasPF.FirstOrDefault(c => c.Id == numeroConta);
+
+            if (conta != null)
+            {
+                conta.Agencia = novaConta.Agencia;
+                conta.Conta = novaConta.Conta;
+                conta.NomeCompleto = novaConta.NomeCompleto;
+                conta.TipoConta = novaConta.TipoConta;
+
+                return conta;
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        private int GetProximoId()
+        {
+            return (int)_ContasPF.Last().Id + 1;
         }
 
         private List<ContaPF> GerarLista()
