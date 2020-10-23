@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -42,12 +43,27 @@ namespace Financial.WebAPI
             return _ContasPF.Where(c => c.Agencia == agencia).ToList();
         }
 
+        public int GetQuantidadeDeContas()
+        {
+            return _ContasPF.Count;
+        }
+
+        public ContaPF GetUltimaConta()
+        {
+            return _ContasPF.LastOrDefault();
+        }
+
         #endregion
 
         #region Post
 
         public ContaPF CriarConta(ContaPF conta)
         {
+            if (!ValidaPropriedades(conta))
+            {
+                return null;
+            }
+
             conta.Id = GetProximoId();
 
             _ContasPF.Add(conta);
@@ -59,9 +75,12 @@ namespace Financial.WebAPI
         {
             contas.ForEach(c =>
             {
-                c.Id = GetProximoId();
+                if (ValidaPropriedades(c))
+                {
+                    c.Id = GetProximoId();
 
-                _ContasPF.Add(c);
+                    _ContasPF.Add(c);
+                }
             });
 
             return _ContasPF;
@@ -112,9 +131,14 @@ namespace Financial.WebAPI
 
         public ContaPF AlterarContaPorId(int id, ContaPF novaConta)
         {
+            if (!ValidaPropriedades(novaConta))
+            {
+                return null;
+            }
+
             var conta = _ContasPF.FirstOrDefault(c => c.Id == id);
 
-            if(conta != null)
+            if (conta != null)
             {
                 conta.Agencia = novaConta.Agencia;
                 conta.Conta = novaConta.Conta;
@@ -129,7 +153,12 @@ namespace Financial.WebAPI
 
         public ContaPF AlterarContaPorConta(int numeroConta, ContaPF novaConta)
         {
-            var conta = _ContasPF.FirstOrDefault(c => c.Id == numeroConta);
+            if (!ValidaPropriedades(novaConta))
+            {
+                return null;
+            }
+
+            var conta = _ContasPF.FirstOrDefault(c => c.Conta == numeroConta);
 
             if (conta != null)
             {
@@ -145,6 +174,53 @@ namespace Financial.WebAPI
         }
 
         #endregion
+
+        #region Patch
+
+        public ContaPF AlterarNomePorId(int id, string nome)
+        {
+            var conta = _ContasPF.FirstOrDefault(c => c.Id == id);
+
+            if (conta != null)
+            {
+                conta.NomeCompleto = nome;
+
+                return conta;
+            }
+
+            return null;
+        }
+
+        public ContaPF AlterarNomePorConta(int numeroConta, string nome)
+        {
+            var conta = _ContasPF.FirstOrDefault(c => c.Conta == numeroConta);
+
+            if (conta != null)
+            {
+                conta.NomeCompleto = nome;
+
+                return conta;
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        private bool ValidaPropriedades(ContaPF conta)
+        {
+            if (conta.NomeCompleto == null || conta.TipoConta == null || conta.Agencia == 0 || conta.Conta == 0)
+            {
+                return false;
+            }
+
+            if (conta.NomeCompleto.Any(n => char.IsNumber(n)) || conta.TipoConta.Any(t => char.IsNumber(t)))
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         private int GetProximoId()
         {

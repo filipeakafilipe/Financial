@@ -24,9 +24,16 @@ namespace Financial.WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("todos")]
-        public IEnumerable<ContaPF> GetAll()
+        public ActionResult<IEnumerable<ContaPF>> GetAll()
         {
-            return _Operacoes.GetAll();
+            try
+            {
+                return _Operacoes.GetAll();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -37,7 +44,14 @@ namespace Financial.WebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<ContaPF> GetById(int id)
         {
-            return _Operacoes.GetById(id);
+            try
+            {
+                return _Operacoes.GetById(id);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -48,7 +62,14 @@ namespace Financial.WebAPI.Controllers
         [HttpGet("conta/{idConta}")]
         public ActionResult<ContaPF> GetByConta(int idConta)
         {
-            return _Operacoes.GetByConta(idConta);
+            try
+            {
+                return _Operacoes.GetByConta(idConta);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -59,7 +80,48 @@ namespace Financial.WebAPI.Controllers
         [HttpGet("agencia/{idAgencia}")]
         public ActionResult<List<ContaPF>> GetByAgencia(int idAgencia)
         {
-            return _Operacoes.GetByAgencia(idAgencia);
+            try
+            {
+                return _Operacoes.GetByAgencia(idAgencia);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Retorna quantidade de contas
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("quantidade")]
+        public ActionResult<int> GetQuantidadeDeContas()
+        {
+            try
+            {
+                return _Operacoes.GetQuantidadeDeContas();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Retorna última conta
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("ultima")]
+        public ActionResult<ContaPF> GetUltimaConta()
+        {
+            try
+            {
+                return _Operacoes.GetUltimaConta();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         #endregion
@@ -74,7 +136,14 @@ namespace Financial.WebAPI.Controllers
         [HttpPost]
         public ActionResult<ContaPF> CriarConta([FromBody] ContaPF conta)
         {
-            return _Operacoes.CriarConta(conta);
+            try
+            {
+                return _Operacoes.CriarConta(conta);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -85,7 +154,14 @@ namespace Financial.WebAPI.Controllers
         [HttpPost("varias")]
         public ActionResult<List<ContaPF>> CriarContas([FromBody] List<ContaPF> contas)
         {
-            return _Operacoes.CriarContas(contas);
+            try
+            {
+                return _Operacoes.CriarContas(contas);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         #endregion
@@ -99,7 +175,14 @@ namespace Financial.WebAPI.Controllers
         [HttpDelete("{id}")]
         public void DeletarContaPorId(int id)
         {
-            _Operacoes.DeletarContaPorId(id);
+            try
+            {
+                _Operacoes.DeletarContaPorId(id);
+            }
+            catch
+            {
+                BadRequest();
+            }
         }
 
         /// <summary>
@@ -108,7 +191,14 @@ namespace Financial.WebAPI.Controllers
         [HttpDelete("todos")]
         public void DeletarTodos()
         {
-            _Operacoes.DeletarTodos();
+            try
+            {
+                _Operacoes.DeletarTodos();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -118,7 +208,14 @@ namespace Financial.WebAPI.Controllers
         [HttpDelete("conta/{numeroConta}")]
         public void DeletarContaPorConta(int numeroConta)
         {
-            _Operacoes.DeletarContaPorConta(numeroConta);
+            try
+            {
+                _Operacoes.DeletarContaPorConta(numeroConta);
+            }
+            catch
+            {
+                BadRequest();
+            }
         }
 
         /// <summary>
@@ -128,23 +225,84 @@ namespace Financial.WebAPI.Controllers
         [HttpDelete("agencia/{numeroAgencia}")]
         public void DeletarContasPorAgencia(int numeroAgencia)
         {
-            _Operacoes.DeletarContasPorAgencia(numeroAgencia);
+            try
+            {
+                _Operacoes.DeletarContasPorAgencia(numeroAgencia);
+            }
+            catch
+            {
+                BadRequest();
+            }
         }
 
         #endregion
 
         #region Put
 
+        /// <summary>
+        /// Atualiza as informações de uma conta
+        /// </summary>
+        /// <param name="id">Id da conta</param>
+        /// <param name="conta">Conta com novas informações</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public ActionResult<ContaPF> AlterarContaPorId(int id, [FromBody] ContaPF conta)
         {
             return _Operacoes.AlterarContaPorId(id, conta);
         }
 
+        /// <summary>
+        /// Atualiza as informações de uma conta
+        /// </summary>
+        /// <param name="numeroConta">Número da conta</param>
+        /// <param name="conta">Conta com novas informações</param>
+        /// <returns></returns>
         [HttpPut("conta/{numeroConta}")]
         public ActionResult<ContaPF> AlterarContaPorConta(int numeroConta, [FromBody] ContaPF conta)
         {
             return _Operacoes.AlterarContaPorConta(numeroConta, conta);
+        }
+
+        #endregion
+
+        #region Patch
+
+        /// <summary>
+        /// Atualiza as informações de uma conta
+        /// </summary>
+        /// <param name="id">Id da conta</param>
+        /// <param name="nome">Novo nome completo</param>
+        /// <returns></returns>
+        [HttpPatch("{id}")]
+        public ActionResult<ContaPF> AlterarNomePorId(int id, string nome)
+        {
+            try
+            {
+                return _Operacoes.AlterarNomePorId(id, nome);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Atualiza as informações de uma conta
+        /// </summary>
+        /// <param name="numeroConta">Número da conta</param>
+        /// <param name="nome">Novo nome completo</param>
+        /// <returns></returns>
+        [HttpPatch("conta/{numeroConta}")]
+        public ActionResult<ContaPF> AlterarNomePorConta(int numeroConta, string nome)
+        {
+            try
+            {
+                return _Operacoes.AlterarNomePorConta(numeroConta, nome);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         #endregion
